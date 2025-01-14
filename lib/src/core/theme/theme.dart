@@ -107,35 +107,28 @@ ElevatedButtonThemeData createButtonTheme(
 
 class DolananThemeData {
   final TextTheme primaryTextTheme;
-  final TextTheme secondaryTextTheme;
 
   final Color primaryColor;
-  final Color secondaryColor;
 
   final ElevatedButtonThemeData primaryButtonTheme;
-  final ElevatedButtonThemeData secondaryButtonTheme;
 
   const DolananThemeData({
     required this.primaryTextTheme,
-    required this.secondaryTextTheme,
     required this.primaryColor,
-    required this.secondaryColor,
     required this.primaryButtonTheme,
-    required this.secondaryButtonTheme,
   });
 
   static light() {
     return DolananThemeData(
       primaryColor: AppColors.primaryColor,
-      secondaryColor: AppColors.secondaryColor,
+
       // thirdColor: thirdColorTheme,
       primaryTextTheme: createTextTheme(textTheme, Colors.white),
-      secondaryTextTheme: createTextTheme(textTheme, AppColors.secondaryColor),
+
       // thirdTextTheme: createTextTheme(baseTextTheme, thirdColorTheme),
       primaryButtonTheme: createButtonTheme(
           baseButtonTheme, AppColors.primaryColor, Colors.black),
-      secondaryButtonTheme: createButtonTheme(
-          baseButtonTheme, AppColors.secondaryColor, Colors.black),
+
       // innactiveButtonTheme:
       //     createButtonTheme(baseButtonTheme, buttonInactiveColor, Colors.black),
     );
@@ -143,16 +136,15 @@ class DolananThemeData {
 
   static dark() {
     return DolananThemeData(
-      primaryColor: AppColors.secondaryColor,
-      secondaryColor: AppColors.secondaryColor,
+      primaryColor: AppColors.primaryColor,
+
       // thirdColor: thirdColorTheme,
       primaryTextTheme: createTextTheme(textTheme, Colors.black),
-      secondaryTextTheme: createTextTheme(textTheme, AppColors.primaryColor),
+
       // thirdTextTheme: createTextTheme(baseTextTheme, thirdColorTheme),
       primaryButtonTheme: createButtonTheme(
           baseButtonTheme, AppColors.primaryColor, Colors.black),
-      secondaryButtonTheme: createButtonTheme(
-          baseButtonTheme, AppColors.primaryColor, Colors.black),
+
       // innactiveButtonTheme:
       //     createButtonTheme(baseButtonTheme, buttonInactiveColor, Colors.black),
     );
