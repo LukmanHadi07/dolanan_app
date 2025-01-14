@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true,
       builder: (context, child) {
         return MaterialApp.router(
-          routerConfig: router,
+          routerConfig: AppRoutes.router,
           theme: ThemeData.light(),
           darkTheme: ThemeData.dark(),
         );
