@@ -14,7 +14,7 @@ class SlideItems extends StatelessWidget {
     return Column(
       children: [
         Container(
-          height: 750,
+          height: 450,
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.only(
               bottomLeft: Radius.circular(25),
@@ -32,18 +32,17 @@ class SlideItems extends StatelessWidget {
         ),
         Text(slideList[index].title,
             textAlign: TextAlign.center,
-            style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                  fontWeight: FontWeight.bold,
-                )),
+            style: Theme.of(context)
+                .textTheme
+                .headlineMedium!
+                .copyWith(fontWeight: FontWeight.bold, color: Colors.black)),
         const SizedBox(
-          height: 15,
+          height: 5,
         ),
         Text(slideList[index].description,
             textAlign: TextAlign.center,
-            style: Theme.of(context)
-                .textTheme
-                .bodyLarge!
-                .copyWith(fontWeight: FontWeight.normal)),
+            style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                fontWeight: FontWeight.normal, color: Colors.black38)),
       ],
     );
   }
