@@ -15,5 +15,5 @@ final slideList = [
       image: "assets/images/kuliner.png",
       title: "CARI KULINER NIKMAT \n DENGAN DOLANAN",
       description:
-          "Bingung mencari kuliner, ayo gunakan \n DOLANAN untuk mencari kuliner yang sesuai \n rekomendasi anda"),
+          "Bingung mencari kuliner, ayo gunakan\nDOLANAN untuk mencari kuliner yang sesuai\nrekomendasi anda"),
 ];
