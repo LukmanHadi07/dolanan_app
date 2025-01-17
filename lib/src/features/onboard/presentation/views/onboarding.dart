@@ -2,8 +2,10 @@ import 'dart:async';
 import 'package:dulinan/src/features/onboard/presentation/widgets/slide_data.dart';
 import 'package:dulinan/src/features/onboard/presentation/widgets/slide_items.dart';
 import 'package:dulinan/src/features/onboard/presentation/widgets/slidedots.dart';
+import 'package:dulinan/src/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 class OnBoarding extends StatefulWidget {
   const OnBoarding({super.key});
@@ -88,7 +90,9 @@ class _OnBoardingState extends State<OnBoarding> {
                           width: 400,
                           height: 60,
                           child: ElevatedButton(
-                            onPressed: () {},
+                            onPressed: () {
+                              context.go(AppRoutes.login);
+                            },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.blue,
                               padding: const EdgeInsets.symmetric(
