@@ -1,4 +1,4 @@
-import 'package:dulinan/src/features/auth/presentation/views/loginv_iews.dart';
+import 'package:dulinan/src/features/auth/presentation/views/login_views.dart';
 import 'package:dulinan/src/features/auth/presentation/views/register_view.dart';
 import 'package:dulinan/src/features/home/presentation/views/home.dart';
 import 'package:dulinan/src/features/onboard/presentation/views/onboarding.dart';
