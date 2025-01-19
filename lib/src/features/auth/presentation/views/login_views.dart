@@ -266,7 +266,9 @@ class _LoginViewState extends State<LoginView> {
                         width: 400,
                         height: 60,
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            context.go(AppRoutes.home);
+                          },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.white,
                             padding: const EdgeInsets.symmetric(
