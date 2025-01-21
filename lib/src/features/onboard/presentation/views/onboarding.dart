@@ -28,17 +28,22 @@ class _OnBoardingState extends State<OnBoarding> {
         _currentPage = 0;
       }
 
-      _pageController.animateToPage(
-        _currentPage,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeIn,
-      );
+      if (_pageController.hasClients) {
+        _pageController.animateToPage(
+          _currentPage,
+          duration: const Duration(milliseconds: 300),
+          curve: Curves.easeIn,
+        );
+      }
     });
   }
 
   @override
   void dispose() {
     _pageController.dispose();
+    Timer.periodic(const Duration(seconds: 5), (Timer timer) {
+      timer.cancel();
+    });
     super.dispose();
   }
 
