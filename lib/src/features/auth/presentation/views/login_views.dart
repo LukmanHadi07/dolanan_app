@@ -267,7 +267,7 @@ class _LoginViewState extends State<LoginView> {
                         height: 60,
                         child: ElevatedButton(
                           onPressed: () {
-                            context.go(AppRoutes.home);
+                            context.go(AppRoutes.main);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.white,
