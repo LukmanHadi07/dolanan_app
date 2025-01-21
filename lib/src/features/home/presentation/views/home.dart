@@ -1,7 +1,9 @@
 import 'package:dulinan/src/core/images_const/image_constants.dart';
 import 'package:dulinan/src/core/theme/color.dart';
+import 'package:dulinan/src/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class Home extends StatefulWidget {
@@ -82,18 +84,23 @@ class _HomeState extends State<Home> {
           width: 150,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(25),
-            color: Colors.grey.shade300,
+            color: Colors.grey.shade100,
           ),
           child: Row(
             children: [
               Container(
-                height: 40,
-                width: 40,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.black,
-                ),
-              ),
+                  height: 40,
+                  width: 40,
+                  decoration: const BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.black,
+                  ),
+                  child: ClipOval(
+                    child: Image.asset(
+                      ImageConstants.instance.garudaKencanaImage,
+                      fit: BoxFit.cover,
+                    ),
+                  )),
               const SizedBox(width: 15),
               const Text('Lukman')
             ],
@@ -104,11 +111,11 @@ class _HomeState extends State<Home> {
           width: 40,
           decoration: BoxDecoration(
             shape: BoxShape.circle,
-            color: Colors.grey.shade300,
+            color: Colors.grey.shade100,
           ),
           child: const Icon(
             Icons.notifications_active_outlined,
-            color: Colors.white,
+            color: Colors.grey,
             size: 20,
           ),
         ),
@@ -121,7 +128,7 @@ class _HomeState extends State<Home> {
       padding: const EdgeInsets.symmetric(vertical: 15),
       child: Image.asset(
         ImageConstants.instance.textBanner,
-        width: 350.w,
+        width: 300.w,
       ),
     );
   }
@@ -136,21 +143,29 @@ class _HomeState extends State<Home> {
         child: Column(
           children: [
             Container(
-              height: 50,
-              width: 50,
-              decoration: const BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.black,
-              ),
-            ),
+                height: 50,
+                width: 50,
+                decoration: const BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.black,
+                ),
+                child: ClipOval(
+                  child: Image.asset(
+                    ImageConstants.instance.garudaKencanaImage,
+                    fit: BoxFit.cover,
+                  ),
+                )),
             const SizedBox(height: 5),
-            const SizedBox(
+            SizedBox(
               width: 50,
               child: Text(
                 'Wisata',
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                  fontSize: 12,
+                  fontSize: 11.sp,
+                  fontFamily: GoogleFonts.poppins(
+                    fontWeight: FontWeight.w500,
+                  ).fontFamily,
                 ),
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
@@ -204,7 +219,7 @@ class _HomeState extends State<Home> {
   }
 
   Widget _destinationList() {
-    return Container(
+    return SizedBox(
       height: 400,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
@@ -215,7 +230,11 @@ class _HomeState extends State<Home> {
               left: index == 0 ? 20 : 15,
               right: index == 3 ? 20 : 15,
             ),
-            child: _cardDestination(),
+            child: InkWell(
+                onTap: () {
+                  context.pushNamed(AppRoutes.detailWisata);
+                },
+                child: _cardDestination()),
           );
         },
       ),
@@ -224,7 +243,7 @@ class _HomeState extends State<Home> {
 
   Widget _cardDestination() {
     return Container(
-      height: 400,
+      height: 200,
       width: 268,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(25),
@@ -247,6 +266,15 @@ class _HomeState extends State<Home> {
               decoration: BoxDecoration(
                 color: Colors.grey.shade300,
                 borderRadius: BorderRadius.circular(25),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: Image.asset(
+                  ImageConstants.instance.garudaKencanaImage,
+                  fit: BoxFit.cover,
+                  height: 286,
+                  width: 240,
+                ),
               ),
             ),
             const Padding(

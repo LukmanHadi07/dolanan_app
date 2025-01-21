@@ -24,7 +24,7 @@ class _SplashState extends ConsumerState<Splash> {
     final isOnBoarded = ref.watch(splashScreenProvider);
 
     if (isOnBoarded) {
-      context.go(AppRoutes.home);
+      context.go(AppRoutes.main);
     } else {
       context.go(AppRoutes.onBoard);
     }
