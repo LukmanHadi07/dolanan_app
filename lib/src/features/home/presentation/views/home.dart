@@ -57,20 +57,41 @@ class _HomeState extends State<Home> {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 15,
-          vertical: 45,
+        padding: const EdgeInsets.only(
+          left: 15,
+          right: 15,
+          top: 50,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _headerProfile(),
-            _titleLabel(),
-            _rowCircle(),
-            _bestDestination(),
-            _destinationList()
-          ],
+        child: SingleChildScrollView(
+          scrollDirection: Axis.vertical,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _headerProfile(),
+              _titleLabel(),
+              _rowCircle(),
+              _bestDestination(),
+              _scrollCardDestination()
+            ],
+          ),
         ),
+      ),
+    );
+  }
+
+  Widget _scrollCardDestination() {
+    return SingleChildScrollView(
+      scrollDirection: Axis.horizontal,
+      child: Row(
+        children: List.generate(6, (index) {
+          return Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 10),
+              child: InkWell(
+                  onTap: () {
+                    context.pushNamed(AppRoutes.detailWisata);
+                  },
+                  child: _cardDestination()));
+        }),
       ),
     );
   }
@@ -193,7 +214,7 @@ class _HomeState extends State<Home> {
 
   Widget _bestDestination() {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 30),
+      padding: const EdgeInsets.symmetric(vertical: 0),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -218,32 +239,8 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget _destinationList() {
-    return SizedBox(
-      height: 400,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: 4,
-        itemBuilder: (context, index) {
-          return Padding(
-            padding: EdgeInsets.only(
-              left: index == 0 ? 20 : 15,
-              right: index == 3 ? 20 : 15,
-            ),
-            child: InkWell(
-                onTap: () {
-                  context.pushNamed(AppRoutes.detailWisata);
-                },
-                child: _cardDestination()),
-          );
-        },
-      ),
-    );
-  }
-
   Widget _cardDestination() {
     return Container(
-      height: 200,
       width: 268,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(25),
@@ -261,7 +258,6 @@ class _HomeState extends State<Home> {
         child: Column(
           children: [
             Container(
-              height: 286,
               width: 240,
               decoration: BoxDecoration(
                 color: Colors.grey.shade300,

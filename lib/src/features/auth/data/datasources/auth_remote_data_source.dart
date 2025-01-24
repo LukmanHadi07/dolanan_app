@@ -27,9 +27,9 @@ class LoginUserRemoteDataSource implements LoginUserDataSource {
         return Left(exception);
       }, (response) {
         final user = User.fromJson(response.data);
-        networkService.updateHeaders({
-          'Authorization': 'Bearer ${user.token}',
-        });
+        // networkService.updateHeaders({
+        //   'Authorization': 'Bearer ${user.token}',
+        // });
         return Right(user);
       });
     } catch (e) {

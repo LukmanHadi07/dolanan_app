@@ -15,11 +15,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
     required this.userRepository,
   }) : super(const AuthState.initial());
 
-  Future<void> loginUser(String username, String password) async {
+  Future<void> loginUser(String email, String password) async {
     state = const AuthState.loading();
     final resp = await authRepository.loginUser(
         user: User(
-      username: username,
+      email: email,
       password: password,
     ));
 

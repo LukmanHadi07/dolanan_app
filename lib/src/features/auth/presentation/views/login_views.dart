@@ -115,24 +115,41 @@
 // }
 
 import 'package:dulinan/src/core/theme/color.dart';
+import 'package:dulinan/src/features/auth/presentation/providers/auth_providers.dart';
+import 'package:dulinan/src/features/auth/presentation/providers/state/auth_state.dart';
 import 'package:dulinan/src/routes/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
-class LoginView extends StatefulWidget {
+class LoginView extends ConsumerStatefulWidget {
   const LoginView({super.key});
 
   @override
-  State<LoginView> createState() => _LoginViewState();
+  ConsumerState<LoginView> createState() => _LoginViewState();
 }
 
-class _LoginViewState extends State<LoginView> {
+class _LoginViewState extends ConsumerState<LoginView> {
+  final TextEditingController emailControler = TextEditingController();
+  final TextEditingController passwordControler = TextEditingController();
+
   bool _isObscured = true;
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(authStateNotifierProvider);
+
+    ref.listen(authStateNotifierProvider.select((value) => value),
+        ((previous, next) {
+      if (next is Failure) {
+        debugPrint(next.exception.message.toString());
+      } else if (next is Success) {
+        debugPrint('Login successful');
+      }
+    }));
+
     return Scaffold(
       backgroundColor: AppColors.primaryColor,
       body: Padding(
@@ -176,20 +193,24 @@ class _LoginViewState extends State<LoginView> {
                     height: 15,
                   ),
                   TextField(
+                      controller: emailControler,
                       decoration: InputDecoration(
-                    filled: true,
-                    fillColor: AppColors.white,
-                    hintText: 'Email',
-                    hintStyle: Theme.of(context).textTheme.titleSmall!.copyWith(
-                        color: AppColors.white,
-                        fontFamily:
-                            GoogleFonts.poppins(fontWeight: FontWeight.w400)
-                                .fontFamily),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  )),
+                        filled: true,
+                        fillColor: AppColors.white,
+                        hintText: 'Email',
+                        hintStyle: Theme.of(context)
+                            .textTheme
+                            .titleSmall!
+                            .copyWith(
+                                color: AppColors.white,
+                                fontFamily: GoogleFonts.poppins(
+                                        fontWeight: FontWeight.w400)
+                                    .fontFamily),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      )),
                 ],
               ),
               const SizedBox(
@@ -213,6 +234,7 @@ class _LoginViewState extends State<LoginView> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       TextField(
+                          controller: passwordControler,
                           obscureText: _isObscured,
                           decoration: InputDecoration(
                             suffixIcon: IconButton(
@@ -262,30 +284,38 @@ class _LoginViewState extends State<LoginView> {
                   ),
                   Column(
                     children: [
-                      SizedBox(
-                        width: 400,
-                        height: 60,
-                        child: ElevatedButton(
-                          onPressed: () {
-                            context.go(AppRoutes.main);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.white,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 50, vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
+                      state.maybeMap(loading: (value) {
+                        return const CircularProgressIndicator();
+                      }, orElse: () {
+                        return SizedBox(
+                          width: 400,
+                          height: 60,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              ref
+                                  .read(authStateNotifierProvider.notifier)
+                                  .loginUser(emailControler.text,
+                                      passwordControler.text);
+                              context.go(AppRoutes.main);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.white,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 50, vertical: 15),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                            ),
+                            child: Text(
+                              'Sign in',
+                              style: TextStyle(
+                                color: AppColors.primaryColor,
+                                fontSize: 16.sp,
+                              ),
                             ),
                           ),
-                          child: Text(
-                            'Sign in',
-                            style: TextStyle(
-                              color: AppColors.primaryColor,
-                              fontSize: 16.sp,
-                            ),
-                          ),
-                        ),
-                      ),
+                        );
+                      }),
                       const SizedBox(
                         height: 10,
                       ),
