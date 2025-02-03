@@ -49,6 +49,7 @@ dependencies:
   flutter_svg: ^2.0.17
   curved_labeled_navigation_bar: ^2.0.5
   riverpod_annotation: ^2.6.1
+  flutter_launcher_icons: ^0.14.3
   flutter_secure_storage: ^4.2.1
 
 dev_dependencies:
@@ -79,6 +80,7 @@ flutter:
   assets:
     - assets/svg/
     - assets/images/
+    - shorebird.yaml
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
