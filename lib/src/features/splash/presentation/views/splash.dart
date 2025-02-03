@@ -1,6 +1,10 @@
 import 'package:dulinan/src/core/theme/color.dart';
-import 'package:dulinan/src/features/splash/presentation/providers/splash_provider.dart';
+
+import 'package:dulinan/src/features/auth/presentation/providers/auth_providers.dart';
+import 'package:dulinan/src/features/auth/presentation/providers/state/auth_state.dart';
+
 import 'package:dulinan/src/routes/routes.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -15,18 +19,25 @@ class Splash extends ConsumerStatefulWidget {
 class _SplashState extends ConsumerState<Splash> {
   @override
   void initState() {
-    _navigateToNextScreen();
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _checkStatusLogin();
+    });
   }
 
-  Future<void> _navigateToNextScreen() async {
-    await Future.delayed(const Duration(seconds: 2));
-    final isOnBoarded = ref.watch(splashScreenProvider);
+  Future<void> _checkStatusLogin() async {
+    final authNotifier = ref.read(authStateNotifierProvider.notifier);
+    await authNotifier.checkStatusLogin();
 
-    if (isOnBoarded) {
+    final authState = ref.read(authStateNotifierProvider);
+    await Future.delayed(const Duration(seconds: 2));
+
+    if (authState is Success) {
+      // ignore: use_build_context_synchronously
       context.go(AppRoutes.main);
     } else {
-      context.go(AppRoutes.onBoard);
+      // ignore: use_build_context_synchronously
+      context.go(AppRoutes.login);
     }
   }
 

@@ -36,8 +36,19 @@ class UserLocalDatasource extends UserDataSource {
         ),
       );
     }
-    final userJson = jsonDecode(data.toString());
-    return Right(User.fromJson(userJson));
+
+    try {
+      final userJson = jsonDecode(data.toString()) as Map<String, dynamic>;
+      return Right(User.fromJson(userJson));
+    } catch (e) {
+      return Left(
+        AppExceptions(
+          message: 'Failed to parse user data',
+          statusCode: 500,
+          identifier: 'UserLocalDatasource.fetchUser() - $e',
+        ),
+      );
+    }
   }
 
   @override
