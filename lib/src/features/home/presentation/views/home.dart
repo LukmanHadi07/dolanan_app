@@ -1,19 +1,22 @@
 import 'package:dulinan/src/core/images_const/image_constants.dart';
 import 'package:dulinan/src/core/theme/color.dart';
+
+import 'package:dulinan/src/features/category/domain/providers/category_provider.dart';
 import 'package:dulinan/src/routes/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-class Home extends StatefulWidget {
+class Home extends ConsumerStatefulWidget {
   const Home({super.key});
 
   @override
-  State<Home> createState() => _HomeState();
+  ConsumerState<Home> createState() => _HomeState();
 }
 
-class _HomeState extends State<Home> {
+class _HomeState extends ConsumerState<Home> {
   late ScrollController _scrollController;
   final double _scrollSpeed = 50.0;
   bool _isScrolling = true;
@@ -21,6 +24,9 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
+    Future.microtask(() {
+      ref.read(cateoryStateNotifierProvider.notifier).fetchCategories();
+    });
     _scrollController = ScrollController();
     startScrolling();
   }
@@ -53,7 +59,9 @@ class _HomeState extends State<Home> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(
+    BuildContext context,
+  ) {
     return Scaffold(
       backgroundColor: Colors.white,
       body: Padding(
@@ -69,7 +77,7 @@ class _HomeState extends State<Home> {
             children: [
               _headerProfile(),
               _titleLabel(),
-              _rowCircle(),
+              _rowCircle(ref),
               _bestDestination(),
               _scrollCardDestination()
             ],
@@ -154,61 +162,72 @@ class _HomeState extends State<Home> {
     );
   }
 
-  Widget _rowCircle() {
-    final List<Widget> circles = List.generate(
-      8,
-      (index) => Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 20,
-        ),
-        child: Column(
-          children: [
-            Container(
-                height: 50,
-                width: 50,
-                decoration: const BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: Colors.black,
-                ),
-                child: ClipOval(
-                  child: Image.asset(
-                    ImageConstants.instance.garudaKencanaImage,
-                    fit: BoxFit.cover,
-                  ),
-                )),
-            const SizedBox(height: 5),
-            SizedBox(
-              width: 50,
-              child: Text(
-                'Wisata',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 11.sp,
-                  fontFamily: GoogleFonts.poppins(
-                    fontWeight: FontWeight.w500,
-                  ).fontFamily,
-                ),
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+  Widget _rowCircle(WidgetRef ref) {
+    final categoryState = ref.watch(cateoryStateNotifierProvider);
 
-    return Container(
-      height: 100,
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      child: ListView(
-        controller: _scrollController,
-        scrollDirection: Axis.horizontal,
-        physics: const NeverScrollableScrollPhysics(),
-        children: [
-          ...circles,
-          ...circles,
-        ],
-      ),
+    return categoryState.when(
+      initial: () => const Center(child: Text('Initial State')),
+      loading: () => const Center(child: CircularProgressIndicator()),
+      success: (categoriesResponse) {
+        // Debug: Pastikan data kategori sudah diterima
+        print("Categories: ${categoriesResponse.data}");
+
+        final List<Widget> circles =
+            categoriesResponse.data?.map<Widget>((category) {
+                  return Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Column(
+                      children: [
+                        Container(
+                          height: 50,
+                          width: 50,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.black,
+                          ),
+                          child: ClipOval(
+                            child: Image.asset(
+                              ImageConstants.instance
+                                  .garudaKencanaImage, // Ganti dengan gambar kategori jika ada
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 5),
+                        SizedBox(
+                          width: 50,
+                          child: Text(
+                            category.categoryName ??
+                                'No Name', // Menampilkan nama kategori
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 11.sp,
+                              fontFamily: GoogleFonts.poppins(
+                                fontWeight: FontWeight.w500,
+                              ).fontFamily,
+                            ),
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }).toList() ??
+                [];
+
+        return Container(
+          height: 100,
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          child: ListView(
+            controller: _scrollController,
+            scrollDirection: Axis.horizontal,
+            physics: const AlwaysScrollableScrollPhysics(), // Bisa scroll
+            children: circles,
+          ),
+        );
+      },
+      error: (exception) => Center(child: Text('Error: ${exception.message}')),
     );
   }
 

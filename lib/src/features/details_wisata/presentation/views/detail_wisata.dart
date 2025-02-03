@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:dulinan/src/core/images_const/image_constants.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 
 class DetailWisata extends StatelessWidget {
   const DetailWisata({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
