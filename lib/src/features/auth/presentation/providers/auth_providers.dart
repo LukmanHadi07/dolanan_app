@@ -1,4 +1,4 @@
-import 'package:dulinan/src/features/auth/domain/providers/login_provider.dart';
+import 'package:dulinan/src/features/auth/domain/providers/auth_provider.dart';
 import 'package:dulinan/src/features/auth/domain/repositories/auth_repository.dart';
 import 'package:dulinan/src/features/auth/presentation/providers/state/auth_notifier.dart';
 import 'package:dulinan/src/features/auth/presentation/providers/state/auth_state.dart';

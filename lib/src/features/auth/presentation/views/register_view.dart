@@ -1,20 +1,30 @@
 import 'package:dulinan/src/core/theme/color.dart';
+import 'package:dulinan/src/features/auth/presentation/providers/auth_providers.dart';
+import 'package:dulinan/src/routes/routes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 
 import 'package:google_fonts/google_fonts.dart';
 
-class RegisterView extends StatefulWidget {
+class RegisterView extends ConsumerStatefulWidget {
   const RegisterView({super.key});
 
   @override
-  State<RegisterView> createState() => _RegisterViewState();
+  ConsumerState<RegisterView> createState() => _RegisterViewState();
 }
 
-class _RegisterViewState extends State<RegisterView> {
+class _RegisterViewState extends ConsumerState<RegisterView> {
+  final TextEditingController nameController = TextEditingController();
+  final TextEditingController emailController = TextEditingController();
+  final TextEditingController passwordController = TextEditingController();
+
   bool _isObscured = true;
   @override
   Widget build(BuildContext context) {
+    final state = ref.watch(authStateNotifierProvider);
+
     return Scaffold(
       backgroundColor: AppColors.primaryColor,
       body: Padding(
@@ -63,20 +73,24 @@ class _RegisterViewState extends State<RegisterView> {
                     height: 15,
                   ),
                   TextField(
+                      controller: nameController,
                       decoration: InputDecoration(
-                    filled: true,
-                    fillColor: AppColors.white,
-                    hintText: 'Name',
-                    hintStyle: Theme.of(context).textTheme.titleSmall!.copyWith(
-                        color: AppColors.white,
-                        fontFamily:
-                            GoogleFonts.poppins(fontWeight: FontWeight.w400)
-                                .fontFamily),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  )),
+                        filled: true,
+                        fillColor: AppColors.white,
+                        hintText: 'Name',
+                        hintStyle: Theme.of(context)
+                            .textTheme
+                            .titleSmall!
+                            .copyWith(
+                                color: AppColors.white,
+                                fontFamily: GoogleFonts.poppins(
+                                        fontWeight: FontWeight.w400)
+                                    .fontFamily),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      )),
                 ],
               ),
               const SizedBox(
@@ -97,20 +111,24 @@ class _RegisterViewState extends State<RegisterView> {
                     height: 15,
                   ),
                   TextField(
+                      controller: emailController,
                       decoration: InputDecoration(
-                    filled: true,
-                    fillColor: AppColors.white,
-                    hintText: 'Email',
-                    hintStyle: Theme.of(context).textTheme.titleSmall!.copyWith(
-                        color: AppColors.white,
-                        fontFamily:
-                            GoogleFonts.poppins(fontWeight: FontWeight.w400)
-                                .fontFamily),
-                    border: OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                  )),
+                        filled: true,
+                        fillColor: AppColors.white,
+                        hintText: 'Email',
+                        hintStyle: Theme.of(context)
+                            .textTheme
+                            .titleSmall!
+                            .copyWith(
+                                color: AppColors.white,
+                                fontFamily: GoogleFonts.poppins(
+                                        fontWeight: FontWeight.w400)
+                                    .fontFamily),
+                        border: OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      )),
                 ],
               ),
               const SizedBox(
@@ -134,6 +152,7 @@ class _RegisterViewState extends State<RegisterView> {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       TextField(
+                          controller: passwordController,
                           obscureText: _isObscured,
                           decoration: InputDecoration(
                             suffixIcon: IconButton(
@@ -172,28 +191,44 @@ class _RegisterViewState extends State<RegisterView> {
                   ),
                   Column(
                     children: [
-                      SizedBox(
-                        width: 400,
-                        height: 60,
-                        child: ElevatedButton(
-                          onPressed: () {},
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.white,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 50, vertical: 15),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15),
+                      state.maybeMap(loading: (value) {
+                        return const Center(
+                          child: CircularProgressIndicator(
+                            color: AppColors.white,
+                          ),
+                        );
+                      }, orElse: () {
+                        return SizedBox(
+                          width: 400,
+                          height: 60,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              ref
+                                  .read(authStateNotifierProvider.notifier)
+                                  .registerUser(
+                                      nameController.text,
+                                      emailController.text,
+                                      passwordController.text);
+                              context.go(AppRoutes.login);
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: AppColors.white,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 50, vertical: 15),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(15),
+                              ),
+                            ),
+                            child: Text(
+                              'Sign up',
+                              style: TextStyle(
+                                color: AppColors.primaryColor,
+                                fontSize: 16.sp,
+                              ),
                             ),
                           ),
-                          child: Text(
-                            'Sign up',
-                            style: TextStyle(
-                              color: AppColors.primaryColor,
-                              fontSize: 16.sp,
-                            ),
-                          ),
-                        ),
-                      ),
+                        );
+                      }),
                       const SizedBox(
                         height: 10,
                       ),
