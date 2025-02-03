@@ -4,6 +4,7 @@ import 'package:dulinan/src/shared/exceptions/http_exceptions.dart';
 
 abstract class AuthenticationRepository {
   Future<Either<AppExceptions, User>> loginUser({required User user});
+  Future<Either<AppExceptions, User>> registerUser({required User user});
   Future<void> saveToken(String token);
   Future<String?> getToken();
 }

@@ -7,26 +7,29 @@ import 'package:dulinan/src/shared/domain/providers/dio_network_service_provider
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-final authDataSourceProvider =
-    Provider.family<LoginUserDataSource, NetworkService>((_, networkService) =>
-        LoginUserRemoteDataSource(networkService: networkService));
+final authRemoteDataSourceProvider =
+    Provider.family<AuthDataSource, NetworkService>(
+  (_, networkService) =>
+      AuthUserRemoteDataSource(networkService: networkService),
+);
 
 final secureStorageProvider = Provider<FlutterSecureStorage>((ref) {
   return const FlutterSecureStorage();
 });
 
-final authLoalDataSourceProvider = Provider<AuthLocalDataSource>((ref) {
+final authLocalDataSourceProvider = Provider<AuthLocalDataSource>((ref) {
   return AuthLocalDataSource(storage: ref.watch(secureStorageProvider));
 });
 
-final authRepositoryProvider = Provider<AuthenticationRepository>(
-  (ref) {
-    final NetworkService networkService = ref.watch(networkServiceProvider);
-    final LoginUserDataSource dataSource =
-        ref.watch(authDataSourceProvider(networkService));
-    final AuthLocalDataSource localDataSource =
-        ref.watch(authLoalDataSourceProvider);
-    return AuthenticationRepositoryImpl(
-        dataSource: dataSource, localDataSource: localDataSource);
-  },
-);
+final authRepositoryProvider = Provider<AuthenticationRepository>((ref) {
+  final NetworkService networkService = ref.watch(networkServiceProvider);
+  final AuthDataSource dataSource =
+      ref.watch(authRemoteDataSourceProvider(networkService));
+  final AuthLocalDataSource localDataSource =
+      ref.watch(authLocalDataSourceProvider);
+
+  return AuthenticationRepositoryImpl(
+    dataSource: dataSource,
+    localDataSource: localDataSource,
+  );
+});
