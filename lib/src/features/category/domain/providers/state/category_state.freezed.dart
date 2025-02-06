@@ -321,6 +321,8 @@ abstract class _$$SuccessImplCopyWith<$Res> {
       __$$SuccessImplCopyWithImpl<$Res>;
   @useResult
   $Res call({CategoriesResponse categories});
+
+  $CategoriesResponseCopyWith<$Res> get categories;
 }
 
 /// @nodoc
@@ -342,6 +344,14 @@ class __$$SuccessImplCopyWithImpl<$Res>
           : categories // ignore: cast_nullable_to_non_nullable
               as CategoriesResponse,
     ));
+  }
+
+  @override
+  @pragma('vm:prefer-inline')
+  $CategoriesResponseCopyWith<$Res> get categories {
+    return $CategoriesResponseCopyWith<$Res>(_value.categories, (value) {
+      return _then(_value.copyWith(categories: value));
+    });
   }
 }
 
