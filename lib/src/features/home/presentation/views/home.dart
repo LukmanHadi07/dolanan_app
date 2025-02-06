@@ -2,6 +2,8 @@ import 'package:dulinan/src/core/images_const/image_constants.dart';
 import 'package:dulinan/src/core/theme/color.dart';
 
 import 'package:dulinan/src/features/category/domain/providers/category_provider.dart';
+import 'package:dulinan/src/features/wisata/domain/entities/wisata.dart';
+import 'package:dulinan/src/features/wisata/domain/providers/wisata_providers.dart';
 import 'package:dulinan/src/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,6 +28,7 @@ class _HomeState extends ConsumerState<Home> {
     super.initState();
     Future.microtask(() {
       ref.read(cateoryStateNotifierProvider.notifier).fetchCategories();
+      ref.read(wisataStateNotifierProvider.notifier).fetchWisata();
     });
     _scrollController = ScrollController();
     startScrolling();
@@ -79,7 +82,7 @@ class _HomeState extends ConsumerState<Home> {
               _titleLabel(),
               _rowCircle(ref),
               _bestDestination(),
-              _scrollCardDestination()
+              _scrollCardDestination(ref)
             ],
           ),
         ),
@@ -87,20 +90,40 @@ class _HomeState extends ConsumerState<Home> {
     );
   }
 
-  Widget _scrollCardDestination() {
-    return SingleChildScrollView(
-      scrollDirection: Axis.horizontal,
-      child: Row(
-        children: List.generate(6, (index) {
-          return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 10),
-              child: InkWell(
+  Widget _scrollCardDestination(WidgetRef ref) {
+    final wisataState = ref.watch(wisataStateNotifierProvider);
+
+    return wisataState.when(
+      initial: () => const Center(child: Text('Initial State')),
+      loading: () => const Center(child: CircularProgressIndicator()),
+      success: (wisataResponse) {
+        final wisataList = wisataResponse.data ?? [];
+
+        if (wisataList.isEmpty) {
+          return const Center(child: Text('Tidak ada data wisata'));
+        }
+
+        return SingleChildScrollView(
+          scrollDirection: Axis.horizontal,
+          child: Row(
+            children: wisataList.map((wisata) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10),
+                child: InkWell(
                   onTap: () {
-                    context.pushNamed(AppRoutes.detailWisata);
+                    context.pushNamed(
+                      AppRoutes.detailWisata,
+                      extra: wisata,
+                    );
                   },
-                  child: _cardDestination()));
-        }),
-      ),
+                  child: _cardDestination(wisata),
+                ),
+              );
+            }).toList(),
+          ),
+        );
+      },
+      error: (message) => Center(child: Text('Error: $message')),
     );
   }
 
@@ -257,7 +280,7 @@ class _HomeState extends ConsumerState<Home> {
     );
   }
 
-  Widget _cardDestination() {
+  Widget _cardDestination(Wisata wisata) {
     return Container(
       width: 268,
       decoration: BoxDecoration(
@@ -283,21 +306,21 @@ class _HomeState extends ConsumerState<Home> {
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(15),
-                child: Image.asset(
-                  ImageConstants.instance.garudaKencanaImage,
+                child: Image.network(
+                  wisata.gambarWisata!,
                   fit: BoxFit.cover,
                   height: 286,
                   width: 240,
                 ),
               ),
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    'Pantai',
+                    wisata.nameWisata!,
                     style: TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
@@ -322,7 +345,7 @@ class _HomeState extends ConsumerState<Home> {
                 ],
               ),
             ),
-            const Padding(
+            Padding(
               padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -336,7 +359,7 @@ class _HomeState extends ConsumerState<Home> {
                       ),
                       SizedBox(width: 5),
                       Text(
-                        'Denpasar Bali',
+                        wisata.alamatWisata!,
                         style: TextStyle(
                           color: Colors.grey,
                           fontSize: 14,
