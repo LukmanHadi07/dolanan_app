@@ -11,6 +11,7 @@ class AuthLocalDataSource {
 
   // Key untuk menyimpan token
   static const String _tokenKey = 'access_token';
+  static const String _isLogginKey = 'is_login';
 
   // Simpan token ke storage
   Future<void> saveToken(String token) async {
@@ -18,6 +19,31 @@ class AuthLocalDataSource {
       await storage.write(key: _tokenKey, value: token);
     } catch (e) {
       throw Exception('Gagal menyimpan token: $e');
+    }
+  }
+
+  Future<void> saveLoginStatus(bool isLoggedIn) async {
+    try {
+      await storage.write(key: _isLogginKey, value: isLoggedIn.toString());
+    } catch (e) {
+      throw Exception('Gagal menyimpan token: $e');
+    }
+  }
+
+  Future<bool> getLoginStatus() async {
+    try {
+      final value = await storage.read(key: _isLogginKey);
+      return value == 'true';
+    } catch (e) {
+      throw Exception('Gagal mengambil token: $e');
+    }
+  }
+
+  Future<void> deleteLoginStatus() async {
+    try {
+      await storage.delete(key: _isLogginKey);
+    } catch (e) {
+      throw Exception('Gagal menghapus status login: $e');
     }
   }
 

@@ -16,11 +16,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
   }) : super(const AuthState.initial());
 
   Future<void> checkStatusLogin() async {
-    state = const AuthState.loading();
-    final user = await userRepository.fetchUser();
-    final token = await authRepository.getToken();
-
-    if (user != null && token != null) {
+    final token = await userRepository.getUserToken();
+    if (token != null && token.isNotEmpty) {
       state = const AuthState.success();
     } else {
       state = const AuthState.initial();
@@ -42,6 +39,8 @@ class AuthNotifier extends StateNotifier<AuthState> {
               statusCode: 1,
               identifier: 'LoginUser() - Token is null'));
         }
+
+        await userRepository.saveUserToken(user.accessToken!);
 
         final hasSaveUserLogin = await userRepository.saveUser(user: user);
         if (hasSaveUserLogin) {
