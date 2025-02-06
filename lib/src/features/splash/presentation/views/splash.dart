@@ -29,7 +29,7 @@ class _SplashState extends ConsumerState<Splash> {
     final authNotifier = ref.read(authStateNotifierProvider.notifier);
     await authNotifier.checkStatusLogin();
 
-    final authState = ref.read(authStateNotifierProvider);
+    final authState = ref.watch(authStateNotifierProvider);
     await Future.delayed(const Duration(seconds: 2));
 
     if (authState is Success) {
@@ -37,7 +37,7 @@ class _SplashState extends ConsumerState<Splash> {
       context.go(AppRoutes.main);
     } else {
       // ignore: use_build_context_synchronously
-      context.go(AppRoutes.login);
+      context.go(AppRoutes.onBoard);
     }
   }
 

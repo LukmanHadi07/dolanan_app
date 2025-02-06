@@ -186,9 +186,8 @@ class _HomeState extends ConsumerState<Home> {
                             color: Colors.black,
                           ),
                           child: ClipOval(
-                            child: Image.asset(
-                              ImageConstants.instance
-                                  .garudaKencanaImage, // Ganti dengan gambar kategori jika ada
+                            child: Image.network(
+                              category.categoryImage ?? '',
                               fit: BoxFit.cover,
                             ),
                           ),
