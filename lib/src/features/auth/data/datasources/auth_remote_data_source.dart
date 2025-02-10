@@ -1,12 +1,13 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:dulinan/src/core/storage/secure_storage.dart';
+
 import 'package:dulinan/src/features/user/data/models/user_response.dart';
 import 'package:dulinan/src/features/user/domain/entities/user.dart';
-import 'package:dulinan/src/shared/data/remote/network_service.dart';
+
 import 'package:dulinan/src/shared/data/remote/remote.dart';
 import 'package:dulinan/src/shared/domain/models/either.dart';
 import 'package:dulinan/src/shared/exceptions/http_exceptions.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 abstract class AuthDataSource {
   Future<Either<AppExceptions, UserResponse>> loginUser(
@@ -17,13 +18,13 @@ abstract class AuthDataSource {
 }
 
 class AuthUserRemoteDataSource implements AuthDataSource {
-  final FlutterSecureStorage? storage;
+  final SecureStorage storage;
   final DioNetworkService networkService;
 
   AuthUserRemoteDataSource({
-    FlutterSecureStorage? storage,
+    storage,
     required this.networkService,
-  }) : storage = storage ?? const FlutterSecureStorage();
+  }) : storage = storage ?? SecureStorage();
 
   @override
   Future<Either<AppExceptions, UserResponse>> loginUser(
@@ -55,15 +56,9 @@ class AuthUserRemoteDataSource implements AuthDataSource {
           final String accessToken = response.data['access_token'];
 
           // Simpan token ke SecureStorage
-          await storage?.write(
-            key: 'access_token',
-            value: accessToken,
-            aOptions: const AndroidOptions(encryptedSharedPreferences: true),
-          );
-          debugPrint("DEBUG: Access Token berhasil disimpan di Secure Storage");
-
+          await storage.saveToken(accessToken);
           // Cek apakah token tersimpan dengan benar
-          final savedToken = await storage?.read(key: 'access_token');
+          final savedToken = await storage.getToken();
           debugPrint("DEBUG: Access Token yang tersimpan = $savedToken");
 
           final user = UserResponse(
