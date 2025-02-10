@@ -1,26 +1,27 @@
 import 'package:dio/dio.dart';
 import 'package:dulinan/src/configs/app_configs.dart';
-import 'package:dulinan/src/configs/interceptor.dart';
+import 'package:dulinan/src/core/interceptor/interceptor.dart';
+import 'package:dulinan/src/core/storage/secure_storage.dart';
+
 import 'package:dulinan/src/shared/data/remote/network_service.dart';
 import 'package:dulinan/src/shared/domain/models/either.dart';
 import 'package:dulinan/src/shared/domain/models/response.dart' as response;
 import 'package:dulinan/src/shared/exceptions/http_exceptions.dart';
 import 'package:dulinan/src/shared/mixins/exception_handler_mixin.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 class DioNetworkService extends NetworkService with ExceptionHandlerMixin {
   final Dio dio;
-  final FlutterSecureStorage secureStorage;
+  final SecureStorage secureStorage;
 
-  // constructor untuk dio
-  DioNetworkService(this.dio, {FlutterSecureStorage? storage})
-      // jika storage tidak null, maka secureStorage = storage
-      : secureStorage = storage ?? const FlutterSecureStorage() {
-    // mengatur base options
+  DioNetworkService(this.dio, {SecureStorage? storage})
+      // Jika storage tidak null, gunakan storage, jika null buat instance baru
+      : secureStorage = storage ?? SecureStorage() {
+    // Mengatur base options
     dio.options = dioBaseOptions;
-    // menambahkan interceptor untuk dio
-    dio.interceptors.add(AuthInterceptor(secureStorage: secureStorage));
+
+    // Menambahkan interceptor untuk dio
+    dio.interceptors.add(InterceptorDulinan(secureStorage));
 
     if (kDebugMode) {
       dio.interceptors
