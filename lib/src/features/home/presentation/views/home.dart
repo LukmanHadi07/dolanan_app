@@ -36,6 +36,7 @@ class _HomeState extends ConsumerState<Home> {
     Future.microtask(() {
       ref.read(cateoryStateNotifierProvider.notifier).fetchCategories();
       ref.read(wisataStateNotifierProvider.notifier).fetchWisata();
+      ref.read(userNotifierProvider.notifier).fetchUser();
     });
     _scrollController = ScrollController();
     startScrolling();
