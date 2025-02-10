@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dulinan/src/features/user/domain/entities/user.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
