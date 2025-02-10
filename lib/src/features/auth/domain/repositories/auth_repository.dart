@@ -1,10 +1,14 @@
+import 'package:dulinan/src/features/user/data/models/user_response.dart';
+
 import 'package:dulinan/src/shared/domain/models/either.dart';
-import 'package:dulinan/src/shared/domain/models/user/user_model.dart';
+
 import 'package:dulinan/src/shared/exceptions/http_exceptions.dart';
 
 abstract class AuthenticationRepository {
-  Future<Either<AppExceptions, User>> loginUser({required User user});
-  Future<Either<AppExceptions, User>> registerUser({required User user});
-  Future<void> saveToken(String token);
-  Future<String?> getToken();
+  Future<Either<AppExceptions, UserResponse>> login(
+      String email, String password);
+  Future<bool> isLoggedIn();
+
+  Future<Either<AppExceptions, UserResponse>> register(
+      String name, String email, String password);
 }

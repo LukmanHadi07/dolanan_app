@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:dulinan/src/features/wisata/data/models/wisata_response.dart';
-import 'package:dulinan/src/shared/data/remote/network_service.dart';
+
+import 'package:dulinan/src/shared/data/remote/remote.dart';
 import 'package:dulinan/src/shared/domain/models/either.dart';
 import 'package:dulinan/src/shared/exceptions/http_exceptions.dart';
 
@@ -9,7 +10,7 @@ abstract class WisataDataSource {
 }
 
 class WisataRemoteDataSource extends WisataDataSource {
-  final NetworkService networkService;
+  final DioNetworkService networkService;
   WisataRemoteDataSource({
     required this.networkService,
   });

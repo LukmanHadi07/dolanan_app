@@ -205,7 +205,7 @@ class _RegisterViewState extends ConsumerState<RegisterView> {
                             onPressed: () {
                               ref
                                   .read(authStateNotifierProvider.notifier)
-                                  .registerUser(
+                                  .register(
                                       nameController.text,
                                       emailController.text,
                                       passwordController.text);

@@ -1,67 +1,107 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'package:dulinan/src/features/auth/data/datasources/auth_local_data_source.dart';
 import 'package:dulinan/src/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:dulinan/src/features/auth/domain/repositories/auth_repository.dart';
-import 'package:dulinan/src/shared/domain/models/user/user_model.dart';
-import 'package:dulinan/src/shared/exceptions/http_exceptions.dart';
-import '../../../../shared/domain/models/either.dart';
+import 'package:dulinan/src/features/user/data/models/user_response.dart';
 
-class AuthenticationRepositoryImpl extends AuthenticationRepository {
-  final AuthDataSource dataSource;
-  final AuthLocalDataSource localDataSource;
+import 'package:dulinan/src/shared/domain/models/either.dart';
+import 'package:dulinan/src/shared/exceptions/http_exceptions.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+
+class AuthenticationRepositoryImpl implements AuthenticationRepository {
+  final AuthDataSource authDataSource;
+  final FlutterSecureStorage storage;
+
+  static const String tokenKey = 'access_token';
+  static const String userKey = 'user_data';
 
   AuthenticationRepositoryImpl({
-    required this.dataSource,
-    required this.localDataSource,
+    required this.authDataSource,
+    required this.storage,
   });
 
   @override
-  Future<Either<AppExceptions, User>> loginUser({required User user}) async {
-    final result = await dataSource.loginUser(user: user);
+  Future<Either<AppExceptions, UserResponse>> login(
+      String email, String password) async {
+    final resp = await authDataSource.loginUser(email, password);
 
-    return result.fold(
-      (exceptionError) {
-        return Left(exceptionError);
-      },
-      (user) async {
-        if (user.accessToken != null) {
-          await localDataSource.saveToken(user.accessToken!);
-        } else {
-          return Left(
-            AppExceptions(
-              message: 'Token not found in response',
-              statusCode: 1,
-              identifier:
-                  'AuthenticationRepositoryImpl.loginUser() - Token is null',
-            ),
-          );
-        }
-        return Right(user);
+    return resp.fold(
+      (error) => Left(error),
+      (userResponse) async {
+        await storage.write(key: tokenKey, value: userResponse.accessToken);
+        return Right(userResponse);
       },
     );
   }
 
   @override
-  Future<Either<AppExceptions, User>> registerUser({required User user}) async {
-    final result = await dataSource.registerUser(user: user);
-
-    return result.fold(
-      (exceptionError) {
-        return Left(exceptionError);
-      },
-      (user) {
-        return Right(user);
-      },
-    );
+  Future<Either<AppExceptions, UserResponse>> register(
+      String name, String email, String password) async {
+    final resp = await authDataSource.registerUser(name, email, password);
+    return resp.fold((error) {
+      return Left(error);
+    }, (userResponse) async {
+      await storage.write(key: tokenKey, value: userResponse.accessToken);
+      return Right(userResponse);
+    });
   }
 
   @override
-  Future<String?> getToken() {
-    return localDataSource.getToken();
+  Future<bool> isLoggedIn() async {
+    final token = await storage.read(key: 'access_token');
+    return token != null && token.isNotEmpty;
   }
 
-  @override
-  Future<void> saveToken(String token) async {
-    await localDataSource.saveToken(token);
-  }
+  // @override
+  // Future<Either<AppExceptions, UserResponse>> register(
+  //     String name, String email, String password) async {
+  //   final result = await authDataSource.registerUser(name, email, password);
+
+  //   return result.fold(
+  //     (error) => Left(error),
+  //     (userResponse) async {
+  //       // Save token if registration automatically logs in user
+  //       if (userResponse.accessToken != null &&
+  //           userResponse.accessToken!.isNotEmpty) {
+  //         await storage.write(key: tokenKey, value: userResponse.accessToken);
+  //       }
+  //       return Right(userResponse);
+  //     },
+  //   );
+  // }
+
+  // @override
+  // Future<Either<AppExceptions, User>> getCurrentUser(String accessToken) async {
+  //   return await authDataSource.getUser(accessToken);
+  // }
+
+  // // Additional methods for token management
+  // Future<String?> getStoredToken() async {
+  //   return await storage.read(key: tokenKey);
+  // }
+
+  // Future<bool> hasToken() async {
+  //   final token = await storage.read(key: tokenKey);
+  //   return token != null && token.isNotEmpty;
+  // }
+
+  // Future<void> deleteToken() async {
+  //   await storage.delete(key: tokenKey);
+  // }
+
+  // Future<void> logout() async {
+  //   await storage.deleteAll();
+  // }
+
+  // // Method to check if user is authenticated
+  // Future<bool> isAuthenticated() async {
+  //   final token = await getStoredToken();
+  //   if (token == null || token.isEmpty) {
+  //     return false;
+  //   }
+
+  //   final userResult = await getCurrentUser(token);
+  //   return userResult.fold(
+  //     (error) => false,
+  //     (user) => true,
+  //   );
+  // }
 }

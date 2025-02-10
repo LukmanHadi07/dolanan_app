@@ -1,10 +1,7 @@
 import 'package:dulinan/src/core/theme/color.dart';
-
 import 'package:dulinan/src/features/auth/presentation/providers/auth_providers.dart';
-import 'package:dulinan/src/features/auth/presentation/providers/state/auth_state.dart';
-
+import 'package:dulinan/src/features/splash/presentation/providers/splash_provider.dart';
 import 'package:dulinan/src/routes/routes.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -20,22 +17,25 @@ class _SplashState extends ConsumerState<Splash> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _checkStatusLogin();
+
+    Future.microtask(() async {
+      await ref.read(authStateNotifierProvider.notifier).checkLoginStatus();
+      _navigateToNextScreen(); // Pindahkan navigasi ke sini setelah login dicek
     });
   }
 
-  Future<void> _checkStatusLogin() async {
-    final authNotifier = ref.read(authStateNotifierProvider.notifier);
-    await authNotifier.checkStatusLogin();
-
-    final authState = ref.watch(authStateNotifierProvider);
+  Future<void> _navigateToNextScreen() async {
     await Future.delayed(const Duration(seconds: 2));
 
-    if (authState is Success) {
+    final isLoggedIn = await ref.read(isLoggedInProvider.future);
+    debugPrint("DEBUG: isLoggedIn = $isLoggedIn");
+
+    if (isLoggedIn) {
+      debugPrint("Navigating to Main Screen");
       // ignore: use_build_context_synchronously
-      context.go(AppRoutes.main);
+      context.go(AppRoutes.main); // Arahkan ke Main Screen jika login
     } else {
+      debugPrint("Navigating to OnBoard");
       // ignore: use_build_context_synchronously
       context.go(AppRoutes.onBoard);
     }

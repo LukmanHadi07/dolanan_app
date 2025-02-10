@@ -1,5 +1,5 @@
 import 'package:dulinan/src/features/category/data/models/categories_response.dart';
-import 'package:dulinan/src/shared/data/remote/network_service.dart';
+import 'package:dulinan/src/shared/data/remote/remote.dart';
 import 'package:dulinan/src/shared/domain/models/either.dart';
 import 'package:dulinan/src/shared/exceptions/http_exceptions.dart';
 
@@ -8,7 +8,7 @@ abstract class CategoryDataSource {
 }
 
 class CategoryRemoteDataSource extends CategoryDataSource {
-  final NetworkService networkService;
+  final DioNetworkService networkService;
 
   CategoryRemoteDataSource({required this.networkService});
 

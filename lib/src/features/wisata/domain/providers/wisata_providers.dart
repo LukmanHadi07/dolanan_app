@@ -3,16 +3,18 @@ import 'package:dulinan/src/features/wisata/data/repositories/wisata_repository_
 import 'package:dulinan/src/features/wisata/domain/providers/state/wisata_notifier.dart';
 import 'package:dulinan/src/features/wisata/domain/providers/state/wisata_state.dart';
 import 'package:dulinan/src/features/wisata/domain/repositories/wisata_repository.dart';
-import 'package:dulinan/src/shared/data/remote/network_service.dart';
+
+import 'package:dulinan/src/shared/data/remote/remote.dart';
 import 'package:dulinan/src/shared/domain/providers/dio_network_service_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final wisataRemoteDataSourceProvider =
-    Provider.family<WisataDataSource, NetworkService>((ref, networkService) =>
-        WisataRemoteDataSource(networkService: networkService));
+    Provider.family<WisataDataSource, DioNetworkService>(
+        (ref, networkService) =>
+            WisataRemoteDataSource(networkService: networkService));
 
 final wisataRepositoryProvider = Provider<WisataRepository>((ref) {
-  final NetworkService networkService = ref.watch(networkServiceProvider);
+  final DioNetworkService networkService = ref.watch(networkServiceProvider);
   final WisataDataSource wisataDataSource =
       ref.watch(wisataRemoteDataSourceProvider(networkService));
   return WisataRepositoryImpl(wisataDataSource: wisataDataSource);

@@ -1,18 +1,25 @@
-import 'package:dulinan/src/core/images_const/image_constants.dart';
-import 'package:dulinan/src/core/theme/color.dart';
-
-import 'package:dulinan/src/features/category/domain/providers/category_provider.dart';
-import 'package:dulinan/src/features/wisata/domain/entities/wisata.dart';
-import 'package:dulinan/src/features/wisata/domain/providers/wisata_providers.dart';
-import 'package:dulinan/src/routes/routes.dart';
+// ignore_for_file: public_member_api_docs, sort_constructors_first
+import 'package:dulinan/src/features/user/domain/entities/user.dart';
+import 'package:dulinan/src/features/user/domain/providers/user_providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+import 'package:dulinan/src/core/images_const/image_constants.dart';
+import 'package:dulinan/src/core/theme/color.dart';
+import 'package:dulinan/src/features/category/domain/providers/category_provider.dart';
+import 'package:dulinan/src/features/wisata/domain/entities/wisata.dart';
+import 'package:dulinan/src/features/wisata/domain/providers/wisata_providers.dart';
+import 'package:dulinan/src/routes/routes.dart';
+
 class Home extends ConsumerStatefulWidget {
-  const Home({super.key});
+  final User? user;
+  const Home({
+    super.key,
+    this.user,
+  });
 
   @override
   ConsumerState<Home> createState() => _HomeState();
@@ -78,7 +85,7 @@ class _HomeState extends ConsumerState<Home> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _headerProfile(),
+              _headerProfile(ref),
               _titleLabel(),
               _rowCircle(ref),
               _bestDestination(),
@@ -127,51 +134,43 @@ class _HomeState extends ConsumerState<Home> {
     );
   }
 
-  Widget _headerProfile() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Container(
-          height: 40,
-          width: 150,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(25),
-            color: Colors.grey.shade100,
-          ),
-          child: Row(
-            children: [
-              Container(
-                  height: 40,
-                  width: 40,
-                  decoration: const BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Colors.black,
-                  ),
-                  child: ClipOval(
-                    child: Image.asset(
-                      ImageConstants.instance.garudaKencanaImage,
-                      fit: BoxFit.cover,
-                    ),
-                  )),
-              const SizedBox(width: 15),
-              const Text('Lukman')
-            ],
-          ),
-        ),
-        Container(
-          height: 40,
-          width: 40,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: Colors.grey.shade100,
-          ),
-          child: const Icon(
-            Icons.notifications_active_outlined,
-            color: Colors.grey,
-            size: 20,
-          ),
-        ),
-      ],
+  Widget _headerProfile(WidgetRef ref) {
+    final userState = ref.watch(userNotifierProvider);
+
+    return userState.when(
+      data: (user) {
+        if (user == null) {
+          return const Text('User not found');
+        }
+
+        return Row(
+          children: [
+            Container(
+              height: 40,
+              width: 40,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.black,
+              ),
+              child: ClipOval(
+                child: user.profileImage != null
+                    ? Image.network(
+                        user.profileImage!,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) =>
+                            Image.asset('assets/images/default_avatar.png'),
+                      )
+                    : Image.asset('assets/images/default_avatar.png'),
+              ),
+            ),
+            const SizedBox(width: 10),
+            Text(user.name ?? 'No Name',
+                style: Theme.of(context).textTheme.bodyMedium),
+          ],
+        );
+      },
+      loading: () => const CircularProgressIndicator(),
+      error: (error, _) => const Text('Failed to load user'),
     );
   }
 
@@ -315,18 +314,18 @@ class _HomeState extends ConsumerState<Home> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
                     wisata.nameWisata!,
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  Row(
+                  const Row(
                     children: [
                       Icon(
                         Icons.star,
@@ -346,21 +345,21 @@ class _HomeState extends ConsumerState<Home> {
               ),
             ),
             Padding(
-              padding: EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Row(
                     children: [
-                      Icon(
+                      const Icon(
                         Icons.location_on,
                         color: Colors.grey,
                         size: 20,
                       ),
-                      SizedBox(width: 5),
+                      const SizedBox(width: 5),
                       Text(
                         wisata.alamatWisata!,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.grey,
                           fontSize: 14,
                         ),

@@ -1,76 +1,51 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
 import 'package:dulinan/src/features/auth/presentation/providers/state/auth_state.dart';
-import 'package:dulinan/src/services/user_cache_service/domain/repositories/user_cache_repository.dart';
-import 'package:dulinan/src/shared/domain/models/user/user_model.dart';
-import 'package:dulinan/src/shared/exceptions/http_exceptions.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:dulinan/src/features/auth/domain/repositories/auth_repository.dart';
 
 class AuthNotifier extends StateNotifier<AuthState> {
-  final AuthenticationRepository authRepository;
-  final UserRepository userRepository;
+  final AuthenticationRepository _repository;
 
-  AuthNotifier({
-    required this.authRepository,
-    required this.userRepository,
-  }) : super(const AuthState.initial());
+  AuthNotifier(this._repository) : super(const AuthState.initial()) {}
 
-  Future<void> checkStatusLogin() async {
-    final token = await userRepository.getUserToken();
-    if (token != null && token.isNotEmpty) {
+  // Future<void> checkAuthStatus() async {
+  //   state = const AuthState.loading();d
+  //   final result = await _repository.getCurrentUser();
+  //   result.fold(
+  //     (failure) => state = AuthState.unauthenticated(failure.message),
+  //     (user) => state = user != null
+  //         ? AuthState.authenticated(user)
+  //         : const AuthState.unauthenticated(null),
+  //   );
+  // }
+
+  Future<void> login(String email, String password) async {
+    state = const AuthState.loading();
+    final result = await _repository.login(email, password);
+    result.fold((failure) => state = AuthState.error(failure),
+        (user) => state = const AuthState.success());
+  }
+
+  Future<void> register(String name, String email, String password) async {
+    state = const AuthState.loading();
+    final result = await _repository.register(name, email, password);
+    result.fold((failure) {
+      state = AuthState.error(failure);
+    }, (user) => state = const AuthState.success());
+  }
+
+  Future<void> checkLoginStatus() async {
+    final isLoggedIn = await _repository.isLoggedIn();
+    if (isLoggedIn) {
       state = const AuthState.success();
-    } else {
-      state = const AuthState.initial();
     }
   }
 
-  Future<void> loginUser(String email, String password) async {
-    state = const AuthState.loading();
-    final resp = await authRepository.loginUser(
-      user: User(email: email, password: password),
-    );
-
-    state = await resp.fold(
-      (failure) => AuthState.error(failure),
-      (user) async {
-        if (user.accessToken == null) {
-          return AuthState.error(AppExceptions(
-              message: 'Token not found',
-              statusCode: 1,
-              identifier: 'LoginUser() - Token is null'));
-        }
-
-        await userRepository.saveUserToken(user.accessToken!);
-
-        final hasSaveUserLogin = await userRepository.saveUser(user: user);
-        if (hasSaveUserLogin) {
-          return const AuthState.success();
-        }
-        return AuthState.error(CacheFailureException());
-      },
-    );
-  }
-
-  Future<void> registerUser(String name, String email, String password) async {
-    state = const AuthState.loading();
-    final resp = await authRepository.registerUser(
-      user: User(name: name, email: email, password: password),
-    );
-
-    state = await resp.fold(
-      (failure) => AuthState.error(failure),
-      (user) async {
-        if (user.accessToken == null) {
-          return AuthState.error(AppExceptions(
-              message: 'Token not found', statusCode: 1, identifier: ''));
-        }
-
-        final hasSaveRegister = await userRepository.saveUser(user: user);
-        if (hasSaveRegister) {
-          return const AuthState.success();
-        }
-        return AuthState.error(CacheFailureException());
-      },
-    );
-  }
+  // Future<void> logout() async {
+  //   final result = await _repository.logout();
+  //   result.fold(
+  //     (failure) => state = AuthState.unauthenticated(failure.message),
+  //     (_) => state = const AuthState.unauthenticated(null),
+  //   );
+  // }
 }

@@ -3,16 +3,18 @@ import 'package:dulinan/src/features/category/data/repositories/category_reposit
 import 'package:dulinan/src/features/category/domain/providers/state/category_notifier.dart';
 import 'package:dulinan/src/features/category/domain/providers/state/category_state.dart';
 import 'package:dulinan/src/features/category/domain/repositories/category_repository.dart';
-import 'package:dulinan/src/shared/data/remote/network_service.dart';
+
+import 'package:dulinan/src/shared/data/remote/remote.dart';
 import 'package:dulinan/src/shared/domain/providers/dio_network_service_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final categoryRemoteDataSourceProvider =
-    Provider.family<CategoryDataSource, NetworkService>((ref, networkService) =>
-        CategoryRemoteDataSource(networkService: networkService));
+    Provider.family<CategoryDataSource, DioNetworkService>(
+        (ref, networkService) =>
+            CategoryRemoteDataSource(networkService: networkService));
 
 final categoryRepositoryProvider = Provider<CategoryRepository>((ref) {
-  final NetworkService networkService = ref.watch(networkServiceProvider);
+  final DioNetworkService networkService = ref.watch(networkServiceProvider);
   final CategoryDataSource categoryDataSource =
       ref.watch(categoryRemoteDataSourceProvider(networkService));
   return CategoryRepositoryImpl(categoryDataSource: categoryDataSource);

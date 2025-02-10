@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:dulinan/src/shared/data/remote/network_service.dart';
@@ -7,6 +6,7 @@ import 'package:dulinan/src/shared/domain/models/either.dart';
 import 'package:dulinan/src/shared/domain/models/response.dart' as response;
 import 'package:dulinan/src/shared/exceptions/http_exceptions.dart';
 
+// method untuk mengandle exception atau error dari api
 mixin ExceptionHandlerMixin on NetworkService {
   Future<Either<AppExceptions, response.Response>>
       handleException<T extends Object>(

@@ -1,35 +1,33 @@
-import 'package:dulinan/src/features/auth/data/datasources/auth_local_data_source.dart';
 import 'package:dulinan/src/features/auth/data/datasources/auth_remote_data_source.dart';
 import 'package:dulinan/src/features/auth/data/repositories/authentication_repository_impl.dart';
 import 'package:dulinan/src/features/auth/domain/repositories/auth_repository.dart';
-import 'package:dulinan/src/shared/data/remote/network_service.dart';
+
+import 'package:dulinan/src/shared/data/remote/remote.dart';
 import 'package:dulinan/src/shared/domain/providers/dio_network_service_provider.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-final authRemoteDataSourceProvider =
-    Provider.family<AuthDataSource, NetworkService>(
-  (_, networkService) =>
-      AuthUserRemoteDataSource(networkService: networkService),
-);
-
+// Provider untuk FlutterSecureStorage
 final secureStorageProvider = Provider<FlutterSecureStorage>((ref) {
   return const FlutterSecureStorage();
 });
 
-final authLocalDataSourceProvider = Provider<AuthLocalDataSource>((ref) {
-  return AuthLocalDataSource(storage: ref.watch(secureStorageProvider));
-});
+// Provider untuk AuthRemoteDataSource
+final authRemoteDataSourceProvider =
+    Provider.family<AuthDataSource, DioNetworkService>(
+  (_, networkService) =>
+      AuthUserRemoteDataSource(networkService: networkService),
+);
 
+// Provider untuk AuthenticationRepository
 final authRepositoryProvider = Provider<AuthenticationRepository>((ref) {
-  final NetworkService networkService = ref.watch(networkServiceProvider);
+  final DioNetworkService networkService = ref.watch(networkServiceProvider);
   final AuthDataSource dataSource =
       ref.watch(authRemoteDataSourceProvider(networkService));
-  final AuthLocalDataSource localDataSource =
-      ref.watch(authLocalDataSourceProvider);
+  final storage = ref.watch(secureStorageProvider);
 
   return AuthenticationRepositoryImpl(
-    dataSource: dataSource,
-    localDataSource: localDataSource,
+    authDataSource: dataSource,
+    storage: storage,
   );
 });
