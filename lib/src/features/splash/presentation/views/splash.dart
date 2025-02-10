@@ -1,4 +1,5 @@
 import 'package:dulinan/src/core/theme/color.dart';
+import 'package:dulinan/src/features/auth/domain/providers/auth_provider.dart';
 import 'package:dulinan/src/features/auth/presentation/providers/auth_providers.dart';
 import 'package:dulinan/src/features/splash/presentation/providers/splash_provider.dart';
 import 'package:dulinan/src/routes/routes.dart';
@@ -21,6 +22,7 @@ class _SplashState extends ConsumerState<Splash> {
     Future.microtask(() async {
       await ref.read(authStateNotifierProvider.notifier).checkLoginStatus();
       _navigateToNextScreen(); // Pindahkan navigasi ke sini setelah login dicek
+      loadToken(ref);
     });
   }
 

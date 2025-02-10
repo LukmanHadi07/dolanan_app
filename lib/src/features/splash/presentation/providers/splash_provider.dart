@@ -1,16 +1,14 @@
-import 'package:dulinan/src/features/auth/data/datasources/auth_local_data_source.dart';
+import 'package:dulinan/src/core/storage/secure_storage.dart';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 /// Gunakan konfigurasi yang lebih stabil untuk Secure Storage
-const storage = FlutterSecureStorage(
-  aOptions: AndroidOptions(encryptedSharedPreferences: true),
-);
+final storage = SecureStorage();
 
 /// Provider untuk mengecek apakah user sudah login
 final isLoggedInProvider = FutureProvider<bool>((ref) async {
-  final token = await storage.read(key: 'access_token');
+  final token = await storage.getToken();
   final isValid = token != null && token.isNotEmpty;
   debugPrint("DEBUG: isLoggedInProvider = $isValid");
   return isValid;
@@ -18,6 +16,6 @@ final isLoggedInProvider = FutureProvider<bool>((ref) async {
 
 /// Fungsi untuk menyimpan bahwa user sudah menyelesaikan onboarding
 Future<void> setOnBoarded() async {
-  await storage.write(key: 'isOnBoarded', value: 'true');
+  await storage.getToken();
   debugPrint("DEBUG: isOnBoarded telah disimpan sebagai true");
 }
