@@ -4,5 +4,5 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 final networkServiceProvider = Provider<DioNetworkService>((ref) {
   final Dio _dio = Dio();
-  return DioNetworkService(_dio);
+  return DioNetworkService(_dio, ref);
 });

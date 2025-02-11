@@ -14,6 +14,7 @@ class UserResponse with _$UserResponse {
     final String? refreshToken,
     final String? tokenType,
     final int? expiresIn,
+    final String? expiresAt,
     final String? role,
   }) = _UserResponse;
 

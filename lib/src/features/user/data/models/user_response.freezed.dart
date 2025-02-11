@@ -27,6 +27,7 @@ mixin _$UserResponse {
   String? get refreshToken => throw _privateConstructorUsedError;
   String? get tokenType => throw _privateConstructorUsedError;
   int? get expiresIn => throw _privateConstructorUsedError;
+  String? get expiresAt => throw _privateConstructorUsedError;
   String? get role => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -49,6 +50,7 @@ abstract class $UserResponseCopyWith<$Res> {
       String? refreshToken,
       String? tokenType,
       int? expiresIn,
+      String? expiresAt,
       String? role});
 }
 
@@ -72,6 +74,7 @@ class _$UserResponseCopyWithImpl<$Res, $Val extends UserResponse>
     Object? refreshToken = freezed,
     Object? tokenType = freezed,
     Object? expiresIn = freezed,
+    Object? expiresAt = freezed,
     Object? role = freezed,
   }) {
     return _then(_value.copyWith(
@@ -103,6 +106,10 @@ class _$UserResponseCopyWithImpl<$Res, $Val extends UserResponse>
           ? _value.expiresIn
           : expiresIn // ignore: cast_nullable_to_non_nullable
               as int?,
+      expiresAt: freezed == expiresAt
+          ? _value.expiresAt
+          : expiresAt // ignore: cast_nullable_to_non_nullable
+              as String?,
       role: freezed == role
           ? _value.role
           : role // ignore: cast_nullable_to_non_nullable
@@ -127,6 +134,7 @@ abstract class _$$UserResponseImplCopyWith<$Res>
       String? refreshToken,
       String? tokenType,
       int? expiresIn,
+      String? expiresAt,
       String? role});
 }
 
@@ -148,6 +156,7 @@ class __$$UserResponseImplCopyWithImpl<$Res>
     Object? refreshToken = freezed,
     Object? tokenType = freezed,
     Object? expiresIn = freezed,
+    Object? expiresAt = freezed,
     Object? role = freezed,
   }) {
     return _then(_$UserResponseImpl(
@@ -179,6 +188,10 @@ class __$$UserResponseImplCopyWithImpl<$Res>
           ? _value.expiresIn
           : expiresIn // ignore: cast_nullable_to_non_nullable
               as int?,
+      expiresAt: freezed == expiresAt
+          ? _value.expiresAt
+          : expiresAt // ignore: cast_nullable_to_non_nullable
+              as String?,
       role: freezed == role
           ? _value.role
           : role // ignore: cast_nullable_to_non_nullable
@@ -198,6 +211,7 @@ class _$UserResponseImpl implements _UserResponse {
       this.refreshToken,
       this.tokenType,
       this.expiresIn,
+      this.expiresAt,
       this.role});
 
   factory _$UserResponseImpl.fromJson(Map<String, dynamic> json) =>
@@ -218,11 +232,13 @@ class _$UserResponseImpl implements _UserResponse {
   @override
   final int? expiresIn;
   @override
+  final String? expiresAt;
+  @override
   final String? role;
 
   @override
   String toString() {
-    return 'UserResponse(success: $success, message: $message, data: $data, accessToken: $accessToken, refreshToken: $refreshToken, tokenType: $tokenType, expiresIn: $expiresIn, role: $role)';
+    return 'UserResponse(success: $success, message: $message, data: $data, accessToken: $accessToken, refreshToken: $refreshToken, tokenType: $tokenType, expiresIn: $expiresIn, expiresAt: $expiresAt, role: $role)';
   }
 
   @override
@@ -241,13 +257,15 @@ class _$UserResponseImpl implements _UserResponse {
                 other.tokenType == tokenType) &&
             (identical(other.expiresIn, expiresIn) ||
                 other.expiresIn == expiresIn) &&
+            (identical(other.expiresAt, expiresAt) ||
+                other.expiresAt == expiresAt) &&
             (identical(other.role, role) || other.role == role));
   }
 
   @JsonKey(ignore: true)
   @override
   int get hashCode => Object.hash(runtimeType, success, message, data,
-      accessToken, refreshToken, tokenType, expiresIn, role);
+      accessToken, refreshToken, tokenType, expiresIn, expiresAt, role);
 
   @JsonKey(ignore: true)
   @override
@@ -272,6 +290,7 @@ abstract class _UserResponse implements UserResponse {
       final String? refreshToken,
       final String? tokenType,
       final int? expiresIn,
+      final String? expiresAt,
       final String? role}) = _$UserResponseImpl;
 
   factory _UserResponse.fromJson(Map<String, dynamic> json) =
@@ -291,6 +310,8 @@ abstract class _UserResponse implements UserResponse {
   String? get tokenType;
   @override
   int? get expiresIn;
+  @override
+  String? get expiresAt;
   @override
   String? get role;
   @override

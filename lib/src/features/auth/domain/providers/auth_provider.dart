@@ -7,11 +7,10 @@ import 'package:dulinan/src/shared/data/remote/remote.dart';
 import 'package:dulinan/src/shared/domain/providers/dio_network_service_provider.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 // Provider untuk FlutterSecureStorage
-final secureStorageProvider = Provider<FlutterSecureStorage>((ref) {
-  return const FlutterSecureStorage();
+final secureStorageProvider = Provider<SecureStorage>((ref) {
+  return SecureStorage();
 });
 
 // Provider untuk AuthRemoteDataSource

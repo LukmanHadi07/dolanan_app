@@ -17,6 +17,7 @@ _$UserResponseImpl _$$UserResponseImplFromJson(Map<String, dynamic> json) =>
       refreshToken: json['refreshToken'] as String?,
       tokenType: json['tokenType'] as String?,
       expiresIn: (json['expiresIn'] as num?)?.toInt(),
+      expiresAt: json['expiresAt'] as String?,
       role: json['role'] as String?,
     );
 
@@ -29,5 +30,6 @@ Map<String, dynamic> _$$UserResponseImplToJson(_$UserResponseImpl instance) =>
       'refreshToken': instance.refreshToken,
       'tokenType': instance.tokenType,
       'expiresIn': instance.expiresIn,
+      'expiresAt': instance.expiresAt,
       'role': instance.role,
     };

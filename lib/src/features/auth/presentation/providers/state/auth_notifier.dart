@@ -26,6 +26,13 @@ class AuthNotifier extends StateNotifier<AuthState> {
         (user) => state = const AuthState.success());
   }
 
+  Future<void> refreshToken(String accessToken) async {
+    state = const AuthState.loading();
+    final result = await _repository.refreshToken(accessToken);
+    result.fold((failure) => state = AuthState.error(failure),
+        (user) => state = const AuthState.success());
+  }
+
   Future<void> register(String name, String email, String password) async {
     state = const AuthState.loading();
     final result = await _repository.register(name, email, password);

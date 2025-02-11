@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:dulinan/src/configs/app_configs.dart';
 import 'package:dulinan/src/core/interceptor/interceptor.dart';
 import 'package:dulinan/src/core/storage/secure_storage.dart';
+import 'package:dulinan/src/features/auth/domain/providers/auth_provider.dart';
 
 import 'package:dulinan/src/shared/data/remote/network_service.dart';
 import 'package:dulinan/src/shared/domain/models/either.dart';
@@ -9,19 +10,25 @@ import 'package:dulinan/src/shared/domain/models/response.dart' as response;
 import 'package:dulinan/src/shared/exceptions/http_exceptions.dart';
 import 'package:dulinan/src/shared/mixins/exception_handler_mixin.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class DioNetworkService extends NetworkService with ExceptionHandlerMixin {
   final Dio dio;
   final SecureStorage secureStorage;
+  final Ref ref;
 
-  DioNetworkService(this.dio, {SecureStorage? storage})
+  DioNetworkService(this.dio, this.ref, {SecureStorage? storage})
       // Jika storage tidak null, gunakan storage, jika null buat instance baru
       : secureStorage = storage ?? SecureStorage() {
+    final authRepository = ref.read(authRepositoryProvider);
     // Mengatur base options
     dio.options = dioBaseOptions;
 
     // Menambahkan interceptor untuk dio
-    dio.interceptors.add(InterceptorDulinan(secureStorage));
+    dio.interceptors.add(InterceptorDulinan(
+      secureStorage,
+      authRepository,
+    ));
 
     if (kDebugMode) {
       dio.interceptors

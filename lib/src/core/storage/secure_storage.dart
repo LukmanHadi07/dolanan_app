@@ -19,4 +19,12 @@ class SecureStorage {
   Future<void> deleteToken() async {
     await _storage.delete(key: 'access_token');
   }
+
+  Future<void> saveTokenExpiry(String expiry) async {
+    await _storage.write(key: 'token_expiry', value: expiry);
+  }
+
+  Future<String?> getTokenExpiry() async {
+    return await _storage.read(key: 'token_expiry');
+  }
 }
