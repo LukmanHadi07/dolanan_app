@@ -20,17 +20,17 @@ final authRemoteDataSourceProvider =
       AuthUserRemoteDataSource(networkService: networkService),
 );
 
-// Provider untuk AuthenticationRepository
-final authRepositoryProvider = Provider<AuthenticationRepository>((ref) {
-  final DioNetworkService networkService = ref.watch(networkServiceProvider);
-  final AuthDataSource dataSource =
-      ref.watch(authRemoteDataSourceProvider(networkService));
-  final storage = ref.watch(secureStorageProvider);
+final authDataSourceProvider = Provider<AuthDataSource>((ref) {
+  final networkService = ref.watch(networkServiceProvider);
 
+  return AuthUserRemoteDataSource(networkService: networkService);
+});
+
+final authRepositoryProvider = Provider<AuthenticationRepository>((ref) {
+  final authDataSource = ref.watch(authDataSourceProvider);
+  final storage = SecureStorage();
   return AuthenticationRepositoryImpl(
-    authDataSource: dataSource,
-    storage: storage,
-  );
+      authDataSource: authDataSource, storage: storage);
 });
 
 final authProvider = StateProvider<String?>((ref) {

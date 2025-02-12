@@ -176,10 +176,10 @@ class AuthUserRemoteDataSource implements AuthDataSource {
         }
 
         // Ambil token dari response
-        final String accessToken = userResponse.data['access_token'];
+        final String newAccessToken = userResponse.data['access_token'];
 
         // Simpan token ke SecureStorage
-        await storage.saveToken(accessToken);
+        await storage.saveToken(newAccessToken);
         // Cek apakah token tersimpan dengan benar
         final savedToken = await storage.getToken();
         debugPrint("DEBUG: Access Token yang tersimpan = $savedToken");

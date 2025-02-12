@@ -1,4 +1,5 @@
 import 'package:dulinan/src/features/home/presentation/views/home.dart';
+import 'package:dulinan/src/features/user/presentation/profile/views/profile_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -13,7 +14,7 @@ class MainProvider extends _$MainProvider {
     const Home(),
     const Center(child: Text('Search')),
     const Center(child: Text('Chat')),
-    const Center(child: Text('Personal')),
+    const ProfileScreen(),
   ];
 
   List<Widget> get pages => _pages;
